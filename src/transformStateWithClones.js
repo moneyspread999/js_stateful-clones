@@ -9,12 +9,17 @@ function transformStateWithClones(state, actions) {
   let currentState = { ...state };
 
   for (const action of actions) {
+    // Обработка действия clear: создаем пустой объект
     if (action.type === ACTION_TYPES.CLEAR) {
       currentState = {};
+      stateHistory.push({ ...currentState });
+      continue;
     }
 
     if (action.type === ACTION_TYPES.ADD_PROPERTIES) {
       currentState = { ...currentState, ...action.extraData };
+      stateHistory.push({ ...currentState });
+      continue;
     }
 
     if (action.type === ACTION_TYPES.REMOVE_PROPERTIES) {
@@ -23,9 +28,9 @@ function transformStateWithClones(state, actions) {
       action.keysToRemove.forEach((key) => {
         delete currentState[key];
       });
+      stateHistory.push({ ...currentState });
+      continue;
     }
-
-    stateHistory.push({ ...currentState });
   }
 
   return stateHistory;
